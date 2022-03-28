@@ -21,6 +21,6 @@ namespace IdentityAPIPuzzle.Services.AuthenticationService.Dto
         public  string Id { get; set; }
         public  bool LockoutEnabled { get; set; }
         public  int AccessFailedCount { get; set; }
-        public List<string> Roles { get; set; }
+        public string Roles { get; set; }
     }
 }

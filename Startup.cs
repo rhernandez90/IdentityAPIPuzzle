@@ -44,10 +44,7 @@ namespace IdentityAPIPuzzle
             services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //    .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
-
+            services.AddCors();
             services.AddControllers().AddJsonOptions(x =>
             x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve); 
 
@@ -76,12 +73,13 @@ namespace IdentityAPIPuzzle
                     {
                         var userService = context.HttpContext.RequestServices.GetRequiredService<IAuthenticateService>();
                         var userId = context.Principal.Identity.Name;
-                        var user = userService.GetById(userId);
+                        var user =  userService.GetById(userId);
                         if (user == null)
                         {
                             // return unauthorized if user no longer exists
                             context.Fail("Unauthorized");
                         }
+                        
                         return Task.CompletedTask;
                     }
                 };
@@ -118,6 +116,11 @@ namespace IdentityAPIPuzzle
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors(x => x
+               .AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader());
+
 
             app.UseAuthentication();
             app.UseAuthorization();

@@ -11,7 +11,8 @@ namespace IdentityAPIPuzzle.Services.AuthenticationService
     {
         Task<UserLoginDto> Authenticate(string user, string password);
         Task<UserDto> Create(RegisterUserDto user);
-        Task<UserDto> GetById(string Id);
+        Task<UserDto> GetByIdAsync(string Id);
+        UserDto GetById(string Id);
         Task Remove(string Id);
         Task<List<UserDto>> GetAll();
     }

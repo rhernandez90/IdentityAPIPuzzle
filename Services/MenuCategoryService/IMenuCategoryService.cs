@@ -9,6 +9,6 @@ namespace IdentityAPIPuzzle.Services.MenuCategoryService
     public interface IMenuCategoryService
     {
         Task<List<MenuCategory>> GetMenuCategoryThree();
-
+        Task<List<MenuCategoryListDto>> GetAll();
     }
 }

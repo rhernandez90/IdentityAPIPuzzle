@@ -47,7 +47,7 @@ namespace IdentityAPIPuzzle.Services.AuthenticationService
             var userEntity = CreateUserEntity(model);
             await userManager.CreateAsync(userEntity);
             await userManager.AddToRoleAsync(userEntity, model.Role);
-            return await PopulateUserData(userEntity);
+            return await PopulateUserDataAsync(userEntity);
         }
 
         public async Task<List<UserDto>> GetAll()
@@ -56,13 +56,17 @@ namespace IdentityAPIPuzzle.Services.AuthenticationService
             return await PopulateUserDataAsync(users);
         }
 
-        public async Task<UserDto> GetById(string Id)
+        public async Task<UserDto> GetByIdAsync(string Id)
         {
-            
             var user =await userManager.FindByIdAsync(Id);
-            return await PopulateUserData(user);
+            return await PopulateUserDataAsync(user);
         }
 
+        public UserDto GetById(string Id)
+        {
+            var user = userManager.Users.FirstOrDefault(x => x.Id == Id);
+            return  PopulateUserData(user);
+        }
 
         public async Task Remove(string Id)
         {
@@ -73,60 +77,7 @@ namespace IdentityAPIPuzzle.Services.AuthenticationService
                 throw new AppException("User doesn't exist");
         }
 
-        protected async Task<UserLoginDto> CreateToken(IList<string> roles, IdentityUser user)
-        {
-            var claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.Name, user.Id));
-            foreach (var item in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, item));
-            }
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["JWT:Secret"]);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
-
-            // authentication successful
-            var userDto = new UserLoginDto
-            {
-                Id = user.Id,
-                Username = user.UserName,
-                Token = tokenString,
-                Roles = string.Join(", ", roles),
-                Email = user.Email
-            };
-
-            return userDto;
-        }
-
-
-
-        private async Task<bool> UserValidation(RegisterUserDto UserData)
-        {
-            var user = await userManager.FindByNameAsync(UserData.UserName);
-            var role = await roleManager.FindByNameAsync(UserData.Role);
-
-            if (string.IsNullOrWhiteSpace(UserData.UserName))
-                throw new AppException("User is required");
-
-            if (string.IsNullOrWhiteSpace(UserData.Password))
-                throw new AppException("Password is required");
-
-            if (user != null)
-                throw new AppException("Username \"" + UserData.UserName + "\" is already taken");
-
-            if (role == null)
-                throw new AppException("Role '" + UserData.Role + "' does not exist");
-
-            return true;
-        }
 
     }
 }

@@ -21,10 +21,19 @@ namespace IdentityAPIPuzzle.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("")]
+        [HttpGet("/menucategories/menuthree")]
+        public async Task<IActionResult> GetMenuThree()
+        {
+            var menu = await _menuCategoryService.GetMenuCategoryThree();
+            return Ok(menu);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("/menucategories/")]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _menuCategoryService.GetMenuCategoryThree());
+            var menu = await _menuCategoryService.GetAll();
+            return Ok(menu);
         }
     }
 }

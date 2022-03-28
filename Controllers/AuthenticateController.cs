@@ -53,17 +53,17 @@ namespace IdentityAPIPuzzle.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet("/user")]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<List<UserDto>> GetAllAsync()
         {
             var users = await _autheticationService.GetAll();
-            return Ok(users);
+            return users;
         }
 
         [Authorize(Roles = "Admin")]
         [HttpGet("/user/{id}")]
         public async Task<IActionResult> GetByIdAsync(string id)
         {
-            var user = await _autheticationService.GetById(id);
+            var user = await _autheticationService.GetByIdAsync(id);
             if (user == null)
                 return NotFound();
             

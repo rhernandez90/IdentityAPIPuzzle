@@ -27,5 +27,20 @@ namespace IdentityAPIPuzzle.Services.MenuCategoryService
                 
         }
 
+        public async Task<List<MenuCategoryListDto>> GetAll()
+        {
+            var menu = _context.MenuCategory
+                .Include(x => x.ParentCategory)
+                .Select(x => new MenuCategoryListDto()
+                {
+                    Id = x.Id,
+                    Description = x.Description,
+                    MainCategory = x.MainCategory,
+                    ParentMenu = x.ParentCategory.Description ?? "",
+                    Role = x.Role
+                });
+            return await menu.ToListAsync();
+        }
+
     }
 }
