@@ -20,9 +20,18 @@ _Below is an example of how you can instruct your audience on installing and set
    ```sh
    git clone https://github.com/rhernandez90/IdentityAPIPuzzle.git   
    ```
-2. Install NPM packages
+2. Update **appsettings.json** to upate sql connecction string and JWT Secret
    ```sh
-   npm install
+    "ConnectionStrings": {
+    "SqlConnection": "Server=.;Initial Catalog=WEBAPI01; Integrated Security=true; MultipleActiveResultSets=True;"
+  },
+
+  "AllowedHosts": "*",
+  "JWT": {
+    "ValidAudience": "http://localhost:4200",
+    "ValidIssuer": "http://localhost:61955",
+    "Secret": "ByYM000OLlMQG6VVVp1OH7Xzyr7gHuw1qvUC5dcGt3SNM"
+  }
    ```
 2. Enter your API in `config.js`
    ```js
