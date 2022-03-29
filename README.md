@@ -38,6 +38,13 @@ _Below is an example of how you can instruct your audience on installing and set
    ```
    
 4. Run Proyect
+   after run the project , initial data will be inserted
+   ```sh
+      default User
+      user : administrator
+      password : 123qwe
+   ```
+   
 
 
 
