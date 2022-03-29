@@ -13,12 +13,12 @@ namespace IdentityAPIPuzzle.Controllers
 {
     [Microsoft.AspNetCore.Components.Route("api/[controller]")]
     [ApiController]
-    public class AuthenticateController : ControllerBase
+    public class UserController : ControllerBase
     {
 
-        private  IAuthenticateService _autheticationService;
+        private  IUserService _autheticationService;
 
-        public AuthenticateController(IAuthenticateService autheticationService)
+        public UserController(IUserService autheticationService)
         {
             _autheticationService = autheticationService;
         }
@@ -42,6 +42,14 @@ namespace IdentityAPIPuzzle.Controllers
         {
             var newUser = await _autheticationService.Create(UserData);
             return Ok(newUser);            
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("/user")]
+        public async Task<IActionResult> UpdateUser([FromBody] RegisterUserDto UserData)
+        {
+            var newUser = await _autheticationService.Update(UserData);
+            return Ok(newUser);
         }
 
         [Authorize(Roles = "Admin")]

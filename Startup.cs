@@ -76,7 +76,7 @@ namespace IdentityAPIPuzzle
                 {
                     OnTokenValidated = context =>
                     {
-                        var userService = context.HttpContext.RequestServices.GetRequiredService<IAuthenticateService>();
+                        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
                         var userId = context.Principal.Identity.Name;
                         var user =  userService.GetById(userId);
                         if (user == null)
@@ -100,7 +100,7 @@ namespace IdentityAPIPuzzle
                 };
             });
 
-            services.AddScoped<IAuthenticateService, AuthenticateService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMenuCategoryService, MenuCategoryService>();
 
 

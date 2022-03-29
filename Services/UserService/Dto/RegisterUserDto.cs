@@ -8,6 +8,7 @@ namespace IdentityAPIPuzzle.Services.AuthenticateService.Dto
 {
     public class RegisterUserDto
     {
+        public string Id { get; set; }
         [Required]
         public string UserName { get; set; }
         [Required]

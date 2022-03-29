@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace IdentityAPIPuzzle.Services.AuthenticationService
 {
-    public partial class AuthenticateService
+    public partial class UserService
     {
 
         public IdentityUser CreateUserEntity(RegisterUserDto model)
@@ -86,6 +86,22 @@ namespace IdentityAPIPuzzle.Services.AuthenticationService
             };
             return user;
         }
+
+        public async Task<IdentityUser> UpdateEntityData(RegisterUserDto model)
+        {
+            var user = userManager.Users.FirstOrDefault(x => x.Id == model.Id);
+            var role = (await userManager.GetRolesAsync(user)).ToList();
+            await userManager.RemoveFromRoleAsync(user, role.FirstOrDefault() ?? "");
+            user.UserName = model.UserName;
+            user.Email = model.Email;
+            var password = new PasswordHasher<IdentityUser>();
+            var hashed = password.HashPassword(user, model.Password);
+            user.PasswordHash = hashed;
+            await userManager.UpdateAsync(user);
+            await userManager.AddToRoleAsync(user, model.Role);
+            return user;
+        }
+
         public async Task<List<UserDto>> PopulateUserDataAsync(IQueryable<IdentityUser> usersEntity)
         {
 
@@ -159,6 +175,22 @@ namespace IdentityAPIPuzzle.Services.AuthenticationService
 
             if (user != null)
                 throw new AppException("Username " + UserData.UserName + " is already taken");
+
+            if (role == null)
+                throw new AppException("Role '" + UserData.Role + "' does not exist");
+
+            return true;
+        }
+
+
+        private async Task<bool> UserUpdateValidation(RegisterUserDto UserData)
+        {
+            var role = await roleManager.FindByNameAsync(UserData.Role);
+            if (string.IsNullOrWhiteSpace(UserData.UserName))
+                throw new AppException("User is required");
+
+            if (string.IsNullOrWhiteSpace(UserData.Password))
+                throw new AppException("Password is required");
 
             if (role == null)
                 throw new AppException("Role '" + UserData.Role + "' does not exist");

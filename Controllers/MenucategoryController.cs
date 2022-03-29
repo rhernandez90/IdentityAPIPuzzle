@@ -33,7 +33,7 @@ namespace IdentityAPIPuzzle.Controllers
 
 
         [AllowAnonymous]
-        [HttpGet("/menucategories/menuthree")]
+        [HttpGet("/menucategories/menutree")]
         public async Task<IActionResult> GetMenuThree()
         {
             var menu = await _menuCategoryService.GetTreeMenu();

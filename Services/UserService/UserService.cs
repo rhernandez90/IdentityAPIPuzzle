@@ -16,12 +16,12 @@ using System.Threading.Tasks;
 
 namespace IdentityAPIPuzzle.Services.AuthenticationService
 {
-    public partial class AuthenticateService : IAuthenticateService
+    public partial class UserService : IUserService
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly IConfiguration _configuration;
-        public AuthenticateService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+        public UserService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
@@ -48,6 +48,13 @@ namespace IdentityAPIPuzzle.Services.AuthenticationService
             await userManager.CreateAsync(userEntity);
             await userManager.AddToRoleAsync(userEntity, model.Role);
             return await PopulateUserDataAsync(userEntity);
+        }
+
+        public async Task<UserDto> Update(RegisterUserDto model)
+        {
+            await UserUpdateValidation(model);
+            var user = await UpdateEntityData(model);
+            return await PopulateUserDataAsync(user);
         }
 
         public async Task<List<UserDto>> GetAll()

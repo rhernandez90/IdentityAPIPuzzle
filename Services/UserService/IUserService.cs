@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace IdentityAPIPuzzle.Services.AuthenticationService
 {
-    public interface IAuthenticateService
+    public interface IUserService
     {
         Task<UserLoginDto> Authenticate(string user, string password);
         Task<UserDto> Create(RegisterUserDto user);
+        Task<UserDto> Update(RegisterUserDto model);
         Task<UserDto> GetByIdAsync(string Id);
         UserDto GetById(string Id);
         Task Remove(string Id);

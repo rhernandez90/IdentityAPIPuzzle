@@ -1,6 +1,7 @@
 ﻿using IdentityAPIPuzzle.Data;
 using IdentityAPIPuzzle.Entities;
 using IdentityAPIPuzzle.Helpers;
+using IdentityAPIPuzzle.Repositories;
 using IdentityAPIPuzzle.Services.Dto;
 using IdentityAPIPuzzle.Services.MenuCategoryService.Dto;
 using Microsoft.AspNetCore.Http;
@@ -16,10 +17,14 @@ namespace IdentityAPIPuzzle.Services.MenuCategoryService
 {
     public partial class MenuCategoryService : IMenuCategoryService
     {
+
+        private IMenuCategoryRepository _menuCategoryRepository;
         private readonly UserManager<IdentityUser> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
         private ApplicationDbContext _context;
         private HttpContext hcontext;
+
+
         public MenuCategoryService(
             UserManager<IdentityUser> userManager, 
             RoleManager<IdentityRole> roleManager,
@@ -29,23 +34,23 @@ namespace IdentityAPIPuzzle.Services.MenuCategoryService
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
-            _context = context;
-            hcontext = haccess.HttpContext;
+            this._context = context;
+            this.hcontext = haccess.HttpContext;
+            this._menuCategoryRepository = new MenuCategoryRepository(_context);
         }
 
         public async Task<MenuCategoryDto> Create(MenuCategoryDto MenuCategory)
         {
             var menu = CreateMenuCategoryEntity(MenuCategory);
-            await _context.AddAsync(menu);
-            await _context.SaveChangesAsync();
+            await _menuCategoryRepository.Insert(menu);
+            await _menuCategoryRepository.Save();
             return PopulateMenuCategoryData(menu);
         }
 
-        public async Task<List<MenuCategory>> GetMenuCategoryTree()
+        public async Task<List<MenuCategoryListDto>> GetAll()
         {
-            var menus =  await _context.MenuCategory.ToListAsync();
-            return menus.Where(x => x.MainCategory).ToList();
-                
+            var menus = await _menuCategoryRepository.GetAll();
+            return menus.ToList();
         }
 
         public async Task<List<TreeMenuDto>> GetTreeMenu()
@@ -64,32 +69,16 @@ namespace IdentityAPIPuzzle.Services.MenuCategoryService
             return returnTreeMenu;
         }
 
-        public async Task<List<MenuCategoryListDto>> GetAll()
-        {
-            var menu = _context.MenuCategory
-                .Include(x => x.ParentCategory)
-                .Select(x => new MenuCategoryListDto()
-                {
-                    Id = x.Id,
-                    Description = x.Description,
-                    MainCategory = x.MainCategory,
-                    ParentMenu = x.ParentCategory.Description ?? "",
-                    Role = x.Role
-                });
-            return await menu.ToListAsync();
-        }
 
         public async Task Remove(int Id)
         {
-            var user = await _context.MenuCategory.FindAsync(Id);
-            if (user != null)
-                 _context.MenuCategory.Remove(user);
-            else
-                throw new Exception("User doesn't exist");
+            _menuCategoryRepository.Delete(Id);
+            await _menuCategoryRepository.Save();
         }
 
-
-
-
+        public Task<List<MenuCategory>> GetMenuCategoryTree()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
