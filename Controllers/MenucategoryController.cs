@@ -1,4 +1,5 @@
-﻿using IdentityAPIPuzzle.Services.MenuCategoryService;
+﻿using IdentityAPIPuzzle.Services.Dto;
+using IdentityAPIPuzzle.Services.MenuCategoryService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ namespace IdentityAPIPuzzle.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class MenucategoryController : ControllerBase
     {
 
@@ -20,11 +22,21 @@ namespace IdentityAPIPuzzle.Controllers
             _menuCategoryService = menuCategoryService;
         }
 
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("/menucategories/")]
+        public async Task<IActionResult> Create([FromBody] MenuCategoryDto model)
+        {
+            var newUser = await _menuCategoryService.Create(model);
+            return Ok(newUser);
+        }
+
+
         [AllowAnonymous]
         [HttpGet("/menucategories/menuthree")]
         public async Task<IActionResult> GetMenuThree()
         {
-            var menu = await _menuCategoryService.GetMenuCategoryThree();
+            var menu = await _menuCategoryService.GetTreeMenu();
             return Ok(menu);
         }
 
@@ -34,6 +46,15 @@ namespace IdentityAPIPuzzle.Controllers
         {
             var menu = await _menuCategoryService.GetAll();
             return Ok(menu);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("/menucategories/{id}")]
+        public async Task<IActionResult> Remove(int id)
+        {
+            await _menuCategoryService.Remove(id);
+            return Ok();            
+            
         }
     }
 }

@@ -1,4 +1,5 @@
 using IdentityAPIPuzzle.Data;
+using IdentityAPIPuzzle.Extensions;
 using IdentityAPIPuzzle.Helpers;
 using IdentityAPIPuzzle.Models;
 using IdentityAPIPuzzle.Services.AuthenticationService;
@@ -45,8 +46,7 @@ namespace IdentityAPIPuzzle
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddCors();
-            services.AddControllers().AddJsonOptions(x =>
-            x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve); 
+            services.AddControllers(); 
 
             services.AddSwaggerGen(c =>
             {
@@ -57,6 +57,11 @@ namespace IdentityAPIPuzzle
             var appSettingsSection = Configuration.GetSection("JWT");
             services.Configure<AppSettings>(appSettingsSection);
 
+
+            
+            
+            
+            
             // configure jwt authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
@@ -111,8 +116,8 @@ namespace IdentityAPIPuzzle
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityAPIPuzzle v1"));
             }
+            app.ConfigureCustomExceptionMiddleware();
 
-            
             app.UseHttpsRedirection();
 
             app.UseRouting();

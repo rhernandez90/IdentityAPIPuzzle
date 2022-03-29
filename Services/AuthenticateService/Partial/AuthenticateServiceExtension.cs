@@ -158,7 +158,7 @@ namespace IdentityAPIPuzzle.Services.AuthenticationService
                 throw new AppException("Password is required");
 
             if (user != null)
-                throw new AppException("Username \"" + UserData.UserName + "\" is already taken");
+                throw new AppException("Username " + UserData.UserName + " is already taken");
 
             if (role == null)
                 throw new AppException("Role '" + UserData.Role + "' does not exist");

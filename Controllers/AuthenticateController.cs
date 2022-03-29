@@ -40,15 +40,8 @@ namespace IdentityAPIPuzzle.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterUserDto UserData)
         {
-            try
-            {
-                var newUser = await _autheticationService.Create(UserData);
-                return Ok(newUser);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            var newUser = await _autheticationService.Create(UserData);
+            return Ok(newUser);            
         }
 
         [Authorize(Roles = "Admin")]
@@ -75,15 +68,8 @@ namespace IdentityAPIPuzzle.Controllers
         [HttpDelete("/user/{id}")]
         public async Task<IActionResult> Remove(string id)
         {
-            try
-            {
-                await _autheticationService.Remove(id);
-                return Ok();
-            }
-            catch(Exception ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
+            await _autheticationService.Remove(id);
+            return Ok();
         }
 
     }
