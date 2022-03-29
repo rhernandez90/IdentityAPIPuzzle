@@ -23,16 +23,14 @@ _Below is an example of how you can instruct your audience on installing and set
 2. Update **appsettings.json** to upate sql connecction string and JWT Secret
    ```js
     "ConnectionStrings": {
-    "SqlConnection": "Server=.;Initial Catalog=WEBAPI01; Integrated Security=true; MultipleActiveResultSets=True;"
+         "SqlConnection": "Server=.;Initial Catalog=WEBAPI01; Integrated Security=true; MultipleActiveResultSets=True;"
       },
-
-  "AllowedHosts": "*",
-  "JWT": {
-    "ValidAudience": "http://localhost:4200",
-    "ValidIssuer": "http://localhost:61955",
-    "Secret": "ByYM000OLlMQG6VVVp1OH7Xzyr7gHuw1qvUC5dcGt3SNM"
-   }
-   ```
+  
+     "JWT": {
+       "ValidAudience": "http://localhost:4200",
+       "ValidIssuer": "http://localhost:61955",
+       "Secret": "ByYM000OLlMQG6VVVp1OH7Xzyr7gHuw1qvUC5dcGt3SNM"
+      }```
 3. Run migrations
    ```js
    dotnet-ef database update
