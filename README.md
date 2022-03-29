@@ -30,7 +30,8 @@ _Below is an example of how you can instruct your audience on installing and set
        "ValidAudience": "http://localhost:4200",
        "ValidIssuer": "http://localhost:61955",
        "Secret": "ByYM000OLlMQG6VVVp1OH7Xzyr7gHuw1qvUC5dcGt3SNM"
-      }```
+      }
+      ```
 3. Run migrations
    ```js
    dotnet-ef database update
